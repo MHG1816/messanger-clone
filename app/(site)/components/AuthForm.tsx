@@ -7,6 +7,7 @@ import { BsGithub, BsGoogle} from "react-icons/bs" ;
 import Input from "@/app/components/input/Input";
 import Button from "@/app/components/Button";
 import AuthSocialButton from "./AuthSocialButton";
+import axios from "axios";
 
 
 type Variant = "LOGIN" | "REGISTER";
@@ -40,8 +41,9 @@ const Auth = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setLoading(true);
 
+    console.log(data)
     if (variant === "REGISTER") {
-      //Axios Register
+      axios.post('/api/register', data)
     }
 
     if (variant === "LOGIN") {
@@ -73,7 +75,7 @@ const Auth = () => {
                 sm:px-10
                 "
       >
-        <form className="space-y-6" onSubmit={onSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {
           variant === 'REGISTER' && (
             <Input id="name" label="Name" register={register} errors={errors} disabled={isLoading}/>
