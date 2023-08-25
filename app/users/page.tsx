@@ -1,9 +1,14 @@
-import React from 'react'
+"use client"
 
-function page() {
+import { signOut } from 'next-auth/react';
+
+function Users() {
   return (
-    <div>page</div>
+    <button onClick={() => signOut()}>
+        Logout
+    </button>
+    
   )
 }
 
-export default page
+export default Users;

@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import Input from "@/app/components/input/Input";
 import Button from "@/app/components/Button";
 import AuthSocialButton from "./AuthSocialButton";
+import { useRouter } from "next/navigation";
 
 
 
@@ -20,14 +21,15 @@ type Variant = "LOGIN" | "REGISTER";
 
 const Auth = () => {
   const session = useSession();
+  const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     if (session?.status === 'authenticated'){
-      console.info('authenticated')
+      router.push("/users")
     }
-  }, [session?.status])
+  }, [session?.status, router])
 
   const toggleVariant = useCallback(() => {
     if (variant === "LOGIN") {
@@ -53,6 +55,7 @@ const Auth = () => {
     setLoading(true);
     if (variant === "REGISTER") {
       axios.post('/api/register', data)
+      .then(() => signIn('credentials', data))
       .catch(() => toast.error("Something went wrong!"))
       .finally(() => setLoading(false))
     }
@@ -67,7 +70,7 @@ const Auth = () => {
         }
 
         if(!callback?.error && callback?.ok){
-          toast.success('Success')
+          router.push('/users')
         }
       })
       .finally(() => setLoading(false));

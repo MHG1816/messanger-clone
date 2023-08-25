@@ -9,5 +9,5 @@ interface AuthContextProps {
 export default function AuthContext({
     children
 }: AuthContextProps) {
-    return <SessionProvider>{children}k</SessionProvider>
+    return <SessionProvider>{children}</SessionProvider>
 }
