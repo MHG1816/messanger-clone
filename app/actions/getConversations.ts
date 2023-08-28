@@ -11,7 +11,7 @@ const getConversations = async () => {
     }
 
     try {
-        const conversations = await prisma.conversations.findMany({
+        const conversations = await prisma.conversation.findMany({
             orderBy: {
                 lastMessageAt: 'desc'
             },
@@ -30,6 +30,7 @@ const getConversations = async () => {
                 }
             }
         });
+
         
         return conversations;
         
@@ -37,3 +38,5 @@ const getConversations = async () => {
         return []
     }
 }
+
+export default getConversations;
