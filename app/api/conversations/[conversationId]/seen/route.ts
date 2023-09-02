@@ -37,7 +37,7 @@ export async function POST(
             return new NextResponse('Invalid ID', { status: 400 });
         }
 
-        const lastMessage = conversation.messages[conversation.messages.length - 1 ]:
+        const lastMessage = conversation.messages[conversation.messages.length - 1 ];
 
         if(!lastMessage){
             return NextResponse.json(conversation);

@@ -19,29 +19,32 @@ const MessageBox: React.FC<MessageBoxProps> = ({
 
     const isOwn = session?.data?.user?.email === data?.sender?.email;
     const seenList = (data.seen || [])
-        .filter((user) => user.name)
-        .join(', ');
+        .filter((user) => user.email !== data?.sender?.email)
+        .map((user) => user.name)
+        .join(", ")
     
-        const container = clsx(
-            "flex gap-3 p-4",
-            isOwn && "justify-end"
-        );
+        console.log(seenList)
+    
+    const container = clsx(
+        "flex gap-3 p-4",
+        isOwn && "justify-end"
+    );
 
-        const avatar = clsx(
-            "flex flex-col gap-2",
-            isOwn && "items-end"
-        );
+    const avatar = clsx(
+        "flex flex-col gap-2",
+        isOwn && "items-end"
+    );
 
-        const body = clsx(
-            "flex flex-col gap-2",
-            isOwn && "items-end"
-        )
+    const body = clsx(
+        "flex flex-col gap-2",
+        isOwn && "items-end"
+    )
 
-        const message = clsx(
-            "text-sm w-fit overflow-hidden",
-            isOwn ? "bg-sky-500 text-white" : "bg-gray-100",
-            data.image ? 'rounded-md p-0' : 'rounded-full py-2 px-3'
-        );
+    const message = clsx(
+        "text-sm w-fit overflow-hidden",
+        isOwn ? "bg-sky-500 text-white" : "bg-gray-100",
+        data.image ? 'rounded-md p-0' : 'rounded-full py-2 px-3'
+    );
 
     return (
         <div className={container}>
@@ -78,6 +81,11 @@ const MessageBox: React.FC<MessageBoxProps> = ({
                         </div>
                     )}
                 </div>
+                {isLast && isOwn && seenList.length > 0 && (
+                    <div className="text-xs font-light text-gray-500">
+                        {`Seen by ${seenList}`}
+                    </div>
+                )}
             </div>
         </div>
     )
