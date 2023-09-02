@@ -23,8 +23,6 @@ const MessageBox: React.FC<MessageBoxProps> = ({
         .map((user) => user.name)
         .join(", ")
     
-        console.log(seenList)
-    
     const container = clsx(
         "flex gap-3 p-4",
         isOwn && "justify-end"
