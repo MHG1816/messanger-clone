@@ -26,13 +26,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const onDelete = useCallback(() => {
     setLoading(true);
 
-    axios.delete(`/api/conversation/${conversationId}`)
+    axios.delete(`/api/conversations/${conversationId}`)
         .then(() => {
             onClose();
             router.push('/conversations');
             router.refresh();
         })
         .catch(() => toast.error('Something went wrong!'))
+        .finally(() => setLoading(false))
   }, [conversationId, onClose, router]);
 
   return (
