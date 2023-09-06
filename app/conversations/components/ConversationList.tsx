@@ -1,16 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md"
 import clsx from "clsx";
+import { User } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 import { FullConversationType } from "@/app/types";
 import useConversation from "@/app/hooks/useConverstion";
 import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
-import { User } from "@prisma/client";
-
+import { pusherClient } from "@/app/libs/pusher";
+import { find } from "lodash";
 
 
 interface ConversationListProps{
@@ -23,10 +25,55 @@ const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
   users
 }) => {
+  const session = useSession();
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const { conversationId, isOpen } = useConversation();
+  
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email
+  } , [session]);
+
+  useEffect(() => {
+    if (!pusherKey) {
+      return;
+    }
+
+    pusherClient.subscribe(pusherKey);
+
+    const newHandler = (conversation: FullConversationType) => {
+      setItems((current) => {
+        if(find(current,{id: conversation.id}))
+        {
+          return current;
+        }
+
+        return [conversation, ...current];
+      })
+    }
+
+    const updatedHandler = ( conversation : FullConversationType) => {
+      setItems((current) => current.map((currentConversation) => {
+        if(currentConversation.id === conversation.id) {
+          return {
+            ...currentConversation,
+            messages: conversation.messages
+          }
+        }
+
+        return currentConversation;
+      }))
+    }
+
+    pusherClient.bind('conversation:new', newHandler);
+    pusherClient.bind('conversation:update', updatedHandler);
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("conversation:update", updatedHandler);
+      pusherClient.unbind('conversation:new', newHandler);
+    }
+  }, [pusherKey])
   return (
     <>
       <GroupChatModal 

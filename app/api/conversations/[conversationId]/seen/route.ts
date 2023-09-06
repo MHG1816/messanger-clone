@@ -66,7 +66,7 @@ export async function POST(
             id: conversationId,
             messages: [updatedMessage]
         })
-        if (lastMessage.sennIds.indexOf(currentUser.id) !== -1) {
+        if (lastMessage.seenIds.indexOf(currentUser.id) !== -1) {
             return NextResponse.json(updatedMessage)
         }
         
