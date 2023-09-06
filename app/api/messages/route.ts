@@ -69,12 +69,13 @@ export async function POST(
 
     const lastMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
 
-    updatedConversation.users.map((user: any) => {
-      pusherServer.trigger(user.email!, 'conversation:updated', {
-        id: conversationId,
+    updatedConversation.users.map((user) => {
+      pusherServer.trigger(user.email!, 'conversation:update', {
+        id: conversationId as String,
         messages: [lastMessage]
-      })
-    })
+      });
+    });
+
     return NextResponse.json(newMessage)
   } catch (error) {
     console.log(error, 'ERROR_MESSAGES')
